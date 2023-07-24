@@ -18,6 +18,25 @@ def create_table(conn, create_table_sql):
     except sqlite3.Error as e:
         print(e)
 
+def get_memories():
+    # Create a connection to the SQLite database
+    conn = sqlite3.connect('AutoGPTBlog.db')
+
+    # Create a cursor
+    cursor = conn.cursor()
+
+    # Perform a query to retrieve the memories
+    cursor.execute('SELECT memory_content FROM memories ORDER BY memory_rank DESC')
+
+    # Fetch all the results
+    memories = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # The function should return a list of memory contents
+    return [memory[0] for memory in memories]
+
 def main():
     database = r"AutoGPTBlog.db"
 
