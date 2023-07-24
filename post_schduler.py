@@ -2,7 +2,7 @@ import schedule
 import os
 import time
 from ai_agent import generate_text
-from wordpress_api import create_post, get_comments
+from wordpress_api import create_post, get_comments, respond_to_comment
 from autogptblogDB import update_memory
 
 username = os.getenv('WP_USERNAME')  
@@ -10,7 +10,7 @@ password = os.getenv('WP_PASSWORD')
 
 def format_comments_for_ai(comments):
     # Concatenate the comments into a single string with some separator
-    formatted_comments = " ".join(comments)
+    formatted_comments = " ".join([comment['content'] for comment in comments])
     return formatted_comments
 
 def update_collective_understanding(summarized_comments):
@@ -31,6 +31,15 @@ def comment_job():
     # Get the comments
     comments = get_comments('https://philosophy.autogptblog.dev')
     
+    # Respond to comments with #AutoAgent
+    for comment in comments:
+        if '#AutoAgent' in comment['content']:
+            # Generate a response
+            response = generate_text(comment['content'])
+            
+            # Post the response
+            respond_to_comment('https://philosophy.autogptblog.dev', username, password, comment['id'], response)
+            
     # Format the comments for the AI model
     formatted_comments = format_comments_for_ai(comments)
     
