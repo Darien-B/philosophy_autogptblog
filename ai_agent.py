@@ -21,7 +21,7 @@ def generate_text(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": "You are an AI blogger."},
             {"role": "user", "content": full_prompt}
         ]
     )
