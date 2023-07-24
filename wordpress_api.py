@@ -1,35 +1,24 @@
+import os
 import requests
+import base64
 
-def authenticate_wordpress(client_id, client_secret, username, password):
-    url = 'https://public-api.wordpress.com/oauth2/token'
-    data = {
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'username': username,
-        'password': password,
-        'grant_type': 'password'
-    }
-    response = requests.post(url, data=data)
+site_url = 'https://philosophy.autogptblog.dev'
+username = os.getenv('WP_USERNAME')  
+password = os.getenv('WP_PASSWORD')  
+
+def get_posts(site_url):
+    url = f'{site_url}/wp-json/wp/v2/posts'
+    response = requests.get(url)
     response_json = response.json()
     if response.status_code == 200:
-        return response_json['access_token']
-    else:
-        raise Exception('Failed to authenticate: {}'.format(response_json))
-
-def get_posts(access_token, site_id):
-    url = f'https://public-api.wordpress.com/rest/v1.1/sites/{site_id}/posts/'
-    headers = {'Authorization': 'Bearer {}'.format(access_token)}
-    response = requests.get(url, headers=headers)
-    response_json = response.json()
-    if response.status_code == 200:
-        return response_json['posts']
+        return response_json
     else:
         raise Exception('Failed to get posts: {}'.format(response_json))
 
-def create_post(access_token, site_id, title, content):
-    url = f'https://public-api.wordpress.com/rest/v1.1/sites/{site_id}/posts/new'
-    headers = {'Authorization': 'Bearer {}'.format(access_token)}
-    data = {'title': title, 'content': content}
+def create_post(site_url, username, password, title, content):
+    url = f'{site_url}/wp-json/wp/v2/posts'
+    headers = {'Authorization': 'Basic ' + base64.b64encode(f'{username}:{password}'.encode()).decode()}
+    data = {'title': title, 'content': content, 'status': 'publish'}
     response = requests.post(url, data=data, headers=headers)
     response_json = response.json()
     if response.status_code == 201:
