@@ -45,3 +45,16 @@ def respond_to_comment(site_url, username, password, comment_id, response_text):
         return response_json
     else:
         raise Exception('Failed to respond to comment: {}'.format(response_json))
+
+
+def get_user_info(site_url, username, password, user_id, fields):
+    url = f'{site_url}/wp-json/wp/v2/users/{user_id}'
+    headers = {'Authorization': 'Basic ' + base64.b64encode(f'{username}:{password}'.encode()).decode()}
+    response = requests.get(url, headers=headers)
+    response_json = response.json()
+    
+    if response.status_code == 200:
+        user_data = {field: response_json.get(field, None) for field in fields}
+        return user_data
+    else:
+        raise Exception('Failed to get user info: {}'.format(response_json))

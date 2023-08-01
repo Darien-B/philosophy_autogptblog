@@ -2,11 +2,12 @@ import schedule
 import os
 import time
 from ai_agent import generate_text
-from wordpress_api import create_post, get_comments, respond_to_comment
-from autogptblogDB import update_memory
+from wordpress_api import create_post, get_comments, respond_to_comment, get_user_info
+from autogptblogDB import create_connection, update_memory, add_user
 
+site_url = 'https://philosophy.autogptblog.dev'
 username = os.getenv('WP_USERNAME')  
-password = os.getenv('WP_PASSWORD') 
+password = os.getenv('WP_PASSWORD')
 
 def format_comments_for_ai(comments):
     # Concatenate the comments into a single string with some separator
@@ -19,6 +20,15 @@ def update_collective_understanding(summarized_comments):
     
     # Update the memory with the summarized comments
     update_memory(collective_understanding_id, summarized_comments)
+
+def handle_new_user(user_id):
+    # Get user info from WordPress
+    fields = ['philosophy_preferences']  # Replace with the actual field name in WordPress
+    user_info = get_user_info(site_url, username, password, user_id, fields)
+
+    # Add user info to SQLite database
+    conn = create_connection()
+    add_user(conn, user_id, user_info['philosophy_preferences'])
 
 def post_job():
     # Generate a new post
