@@ -85,3 +85,25 @@ def add_user(conn, user_id, top_3_philosophies):
         conn.commit()
     except sqlite3.Error as e:
         print(e)
+
+# SQL queries to update the "memories" table for memory scoring
+update_memories_table_query = """
+ALTER TABLE memories ADD COLUMN novelty INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE memories ADD COLUMN usefulness INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE memories ADD COLUMN accuracy INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE memories ADD COLUMN community_engagement INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE memories ADD COLUMN total_score INTEGER NOT NULL DEFAULT 0;
+"""
+
+# Function to update the memories table structure
+def update_memories_table():
+    # Connecting to the SQLite database
+    conn = sqlite3.connect('AutoGPTBlog.db')
+    cursor = conn.cursor()
+
+    # Executing the queries to update the "memories" table
+    cursor.executescript(update_memories_table_query)
+
+    # Committing the changes and closing the connection
+    conn.commit()
+    conn.close()
