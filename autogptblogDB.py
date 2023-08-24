@@ -70,13 +70,18 @@ if __name__ == '__main__':
     main()
 
 
+
 def add_user(conn, user_id, top_3_philosophies):
+    # Splitting the top 3 philosophies
     philosophy1, philosophy2, philosophy3 = top_3_philosophies.split(', ')
-    cursor = conn.cursor()
-    cursor.execute(
-        '''
-        INSERT INTO users (id, genre1, genre2, genre3) VALUES (?, ?, ?, ?)
-        ''',
-        (user_id, philosophy1, philosophy2, philosophy3),
-    )
-    conn.commit()
+    
+    # SQL query to insert preferences into the "users" table
+    sql = '''INSERT INTO users (id, genre1, genre2, genre3) VALUES (?, ?, ?, ?)'''
+    
+    # Executing the query
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (user_id, philosophy1, philosophy2, philosophy3))
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)

@@ -58,3 +58,10 @@ def get_user_info(site_url, username, password, user_id, fields):
         return user_data
     else:
         raise Exception('Failed to get user info: {}'.format(response_json))
+
+def get_user_preferences(site_url, username, password, user_id):
+    # Calling the existing get_user_info function
+    user_info = get_user_info(site_url, username, password, user_id, fields=['genre1', 'genre2', 'genre3'])
+    # Extracting the preferences
+    preferences = (user_info['genre1'], user_info['genre2'], user_info['genre3'])
+    return preferences
