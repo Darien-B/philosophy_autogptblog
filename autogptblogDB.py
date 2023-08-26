@@ -132,3 +132,7 @@ def update_memory(connection, user_id, new_memory):
     cur = connection.cursor()
     cur.execute("UPDATE users SET memory=? WHERE id=?", (new_memory, user_id))
     connection.commit()
+
+# Placeholder for missing 'update_memory' function
+def update_memory():
+    pass
