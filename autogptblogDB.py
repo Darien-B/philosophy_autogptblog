@@ -124,3 +124,11 @@ def retrieve_top_memories(category=None, score_threshold=7.5):
     """
     # TODO: Add database query logic to fetch memories based on the score and possibly the category
     return []
+
+def update_memory(connection, user_id, new_memory):
+    """
+    Update user memory in the database.
+    """
+    cur = connection.cursor()
+    cur.execute("UPDATE users SET memory=? WHERE id=?", (new_memory, user_id))
+    connection.commit()
