@@ -60,7 +60,7 @@ def comment_job():
     update_collective_understanding(summarized_comments)
 
 # Schedule the jobs
-schedule.every().day.at("21:15").do(post_job)
+schedule.every().day.at("04:35").do(post_job)
 schedule.every().day.at("23:59").do(comment_job)
 
 while True:
