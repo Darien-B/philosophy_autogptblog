@@ -1,1 +1,1 @@
-web: gunicorn post_management:app
+web: gunicorn post_management:app --timeout 90
